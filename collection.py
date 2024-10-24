@@ -1,30 +1,44 @@
 # ; <===================================>
 # ; WRITTEN BY VXBO
-# ; #
-# ; This file contains a collection of
-# ; prewritten analysis, visualization
-# ; and utility functions.
-# ; #
-# ; With the use of IDAPython API and
-# ; other external libraries.
+# ; <===================================>
+# ; 
+# ; This  file contains a collection  of
+# ; prewritten  analysis,  visualization
+# ; and utility  functions with the  use
+# ; of IDAPython and external libraries.
+# ; 
 # ; <===================================>
 # ; Licensed under The Unlicense license.
 # ; See LICENSE.txt in the project root
-# ; for full license information.
+# ; for full information.
 # ; <===================================>
 
 
-# /*******************************************
-# TODO: add comments and function descriptions
-# *******************************************/
+# ; <========================>
+# ; TODO: add doxygen comments
+# ; <========================>
 
 
-
+# ; <=====================================>
+# ; IMPORT SECTION START
+# ; <=====================================>
 from typing import List, Tuple, Union, Optional
 import idaapi, idautils, idc          # type: ignore
+# ; <=====================================>
+# ; IMPORT SECTION END
+# ; <=====================================>
 
+# ; <=====================================>
+# ; CONSTANT GLOBAL VARIABLES SECTION START
+# ; <=====================================>
 BASEADDR = idaapi.get_imagebase()
+# ; <=====================================>
+# ; CONSTANT GLOBAL VARIABLES SECTION END
+# ; <=====================================>
 
+# ; <=====================================>
+# ; FUNCTION SECTION START
+# ; <=====================================>
 def make_namespace(enum_name: str, entries: List[Tuple[str, Union[str, int]]], file) -> None:
     file.write("namespace {} {\n".format(enum_name))
 
@@ -219,19 +233,7 @@ def get_function_mem_usage(address: int) -> int:
     return function.size() + get_function_stack_size(address) if function else 0
 
 def compare_functions(address1: int, address2: int) -> float:
-    import difflib
-
-    ins1 = get_function_instructions(address1)
-    ins2 = get_function_instructions(address2)
-    # NEW:
-    return difflib.SequenceMatcher(None, ins1, ins2).ratio()
-    # OLD:
-    # -- # Jaccard index implementation
-    # -- s1 = set(ins1)
-    # -- s2 = set(ins2)
-    # -- intersection = len(s1.intersection(s2))
-    # -- union = len(s1.union(s2))
-    # -- return intersection / union if union else 0.0
+    return __import__("difflib").SequenceMatcher(None, get_function_instructions(address1), get_function_instructions(address2)).ratio()
 
 def visualize_function_control_flow_graph(address: int) -> None:
     import networkx as nx           # type: ignore
@@ -498,3 +500,8 @@ def detect_dead_code() -> List[Tuple[str, int]]:
         for callee_name, _ in get_function_callees(address):
             called.add(callee_name)
     return [(name, address) for name, address in functions if name not in called]
+# ; <=====================================>
+# ; FUNCTION SECTION END
+# ; <=====================================>
+
+# <<<<<<<<<<<<<<<<<<<EOF>>>>>>>>>>>>>>>>>>>
